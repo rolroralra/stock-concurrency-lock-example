@@ -1,15 +1,12 @@
 package com.example.stockconcurrencylockexample.service;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import com.example.stockconcurrencylockexample.common.TestExecutors;
 import com.example.stockconcurrencylockexample.domain.Stock;
 import com.example.stockconcurrencylockexample.repository.StockRepository;
-import jakarta.persistence.EntityManager;
-import javax.sql.DataSource;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;

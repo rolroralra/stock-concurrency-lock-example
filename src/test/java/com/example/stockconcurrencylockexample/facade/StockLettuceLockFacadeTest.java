@@ -1,7 +1,7 @@
 package com.example.stockconcurrencylockexample.facade;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import com.example.stockconcurrencylockexample.common.RedisTest;
 import com.example.stockconcurrencylockexample.common.TestExecutors;

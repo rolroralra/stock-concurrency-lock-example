@@ -3,7 +3,6 @@ package com.example.stockconcurrencylockexample.service;
 import com.example.stockconcurrencylockexample.domain.Stock;
 import com.example.stockconcurrencylockexample.repository.StockRepository;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class StockSynchronizedService implements StockCommand {

@@ -5,7 +5,6 @@ import org.junit.jupiter.api.BeforeAll;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.testcontainers.containers.GenericContainer;
-import org.testcontainers.containers.MySQLContainer;
 
 public abstract class RedisTest {
     private final static String TEST_CONTAINER_IMAGE_TAG = "redis:7.2.3-alpine";

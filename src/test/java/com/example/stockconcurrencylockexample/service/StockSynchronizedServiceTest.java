@@ -7,7 +7,6 @@ import com.example.stockconcurrencylockexample.common.TestExecutors;
 import com.example.stockconcurrencylockexample.domain.Stock;
 import com.example.stockconcurrencylockexample.repository.StockRepository;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;

@@ -1,7 +1,6 @@
 package com.example.stockconcurrencylockexample.facade;
 
 import com.example.stockconcurrencylockexample.repository.LockRepository;
-import com.example.stockconcurrencylockexample.repository.StockRepository;
 import com.example.stockconcurrencylockexample.service.StockCommand;
 import com.example.stockconcurrencylockexample.service.StockService;
 import org.springframework.stereotype.Component;

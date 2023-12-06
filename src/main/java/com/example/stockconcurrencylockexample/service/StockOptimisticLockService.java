@@ -22,23 +22,4 @@ public class StockOptimisticLockService implements StockCommand {
 
         stock.decrease(quantity);
     }
-
-    private void retryUntilSuccess(Runnable runnable) throws InterruptedException {
-        while (true) {
-            try {
-                runnable.run();
-                break;
-            } catch (RuntimeException e) {
-                // retry
-                Thread.sleep(500);
-            }
-        }
-    }
-
-    private void _decreaseStockQuantity(Long id, Long quantity) {
-
-    }
-
-
-
 }
