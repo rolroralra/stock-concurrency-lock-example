@@ -1,0 +1,22 @@
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/test
+    username: root
+    password:
+#    hikari:
+#      maximum-pool-size: 40
+#      connection-timeout: 1000
+
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: create
+    properties:
+      hibernate:
+        show_sql: true
+logging:
+  level:
+    org.hibernate:
+      sql: DEBUG
+      type.descriptor.sql.BasicBinder: TRACE
