@@ -18,11 +18,17 @@ public class StockRedissonLockFacade implements StockCommand {
         this.stockService = stockService;
     }
 
+    /**
+     * Decrease stock quantity with Redisson Lock
+     * @param id Product ID
+     * @param quantity Quantity to decrease
+     */
     @Override
     public void decreaseStockQuantity(Long id, Long quantity) {
         RLock lock = redissonClient.getLock(id.toString());
 
         try {
+            // pub-sub Lock
             boolean isLocked = lock.tryLock(10, 1, TimeUnit.SECONDS);
 
             if (!isLocked) {
@@ -31,7 +37,7 @@ public class StockRedissonLockFacade implements StockCommand {
 
             stockService.decreaseStockQuantity(id, quantity);
         } catch (InterruptedException e) {
-            throw new RuntimeException(e);
+            Thread.currentThread().interrupt();
         } finally {
             lock.unlock();
         }

@@ -2,6 +2,7 @@ package com.example.stockconcurrencylockexample.service;
 
 import com.example.stockconcurrencylockexample.domain.Stock;
 import com.example.stockconcurrencylockexample.repository.StockRepository;
+import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -14,6 +15,13 @@ public class StockOptimisticLockService implements StockCommand {
         this.stockRepository = stockRepository;
     }
 
+    /**
+     * Decrease stock quantity.
+     * @param id Product ID
+     * @param quantity Quantity to decrease
+     * @throws IllegalStateException If the stock quantity is less than the quantity to decrease
+     * @throws ObjectOptimisticLockingFailureException If too much requests come at the same time
+     */
     @Transactional
     @Override
     public void decreaseStockQuantity(Long id, Long quantity) {

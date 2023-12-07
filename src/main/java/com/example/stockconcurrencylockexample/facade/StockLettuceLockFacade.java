@@ -18,11 +18,16 @@ public class StockLettuceLockFacade implements StockCommand {
         this.stockService = stockService;
     }
 
+    /**
+     * Decrease stock quantity with Redis Lock (Lettuce)
+     * @param id Product ID
+     * @param quantity Quantity to decrease
+     */
     @Override
     public void decreaseStockQuantity(Long id, Long quantity) {
         try {
-            while (!redisLockRepository.lock(id)) {
-                sleep(100);
+            while (Boolean.FALSE.equals(redisLockRepository.lock(id))) {
+                sleep(100);  // Spin Lock
             }
 
             stockService.decreaseStockQuantity(id, quantity);
@@ -35,7 +40,7 @@ public class StockLettuceLockFacade implements StockCommand {
         try {
             Thread.sleep(millis);
         } catch (InterruptedException e) {
-            throw new RuntimeException(e);
+            Thread.currentThread().interrupt();
         }
     }
 }

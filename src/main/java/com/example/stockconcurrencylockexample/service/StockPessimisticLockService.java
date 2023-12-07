@@ -14,6 +14,12 @@ public class StockPessimisticLockService implements StockCommand {
         this.stockRepository = stockRepository;
     }
 
+    /**
+     * Decrease stock quantity.
+     * @param id Product ID
+     * @param quantity Quantity to decrease
+     * @throws IllegalStateException If the stock quantity is less than the quantity to decrease
+     */
     @Transactional
     @Override
     public void decreaseStockQuantity(Long id, Long quantity) {

@@ -15,11 +15,12 @@ public class StockOptimisticLockFacade implements StockCommand {
     @Override
     public void decreaseStockQuantity(Long id, Long quantity) {
         try {
+            // Retry until success
             retryUntilSuccess(() ->
                 stockOptimisticLockService.decreaseStockQuantity(id, quantity)
             );
         } catch (InterruptedException e) {
-            throw new RuntimeException(e);
+            Thread.currentThread().interrupt();
         }
     }
 

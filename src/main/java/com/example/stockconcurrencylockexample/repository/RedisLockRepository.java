@@ -12,12 +12,22 @@ public class RedisLockRepository {
         this.redisTemplate = redisTemplate;
     }
 
+    /**
+     * Lock product by ID with Redis Lock (Lettuce)
+     * @param id Product ID
+     * @return true if lock is acquired, false otherwise
+     */
     public Boolean lock(Long id) {
         return redisTemplate
             .opsForValue()
             .setIfAbsent(id.toString(), "lock", Duration.ofSeconds(3));
     }
 
+    /**
+     * Unlock product by ID with Redis Lock (Lettuce)
+     * @param id Product ID
+     * @return true if lock is released, false otherwise
+     */
     public Boolean unlock(Long id) {
         return redisTemplate.delete(id.toString());
     }
