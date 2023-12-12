@@ -29,6 +29,40 @@ public interface StockRepository extends JpaRepository<Stock, Long> {
 }
 ```
 
+<details>
+  <summary>재고 관리시스템 구현 코드 예시</summary>
+  <p>
+
+```java
+@Service
+public class StockPessimisticLockService implements StockCommand {
+
+    private final StockRepository stockRepository;
+
+    public StockPessimisticLockService(StockRepository stockRepository) {
+        this.stockRepository = stockRepository;
+    }
+
+    /**
+     * Decrease stock quantity.
+     * @param id Product ID
+     * @param quantity Quantity to decrease
+     * @throws IllegalStateException If the stock quantity is less than the quantity to decrease
+     */
+    @Transactional
+    @Override
+    public void decreaseStockQuantity(Long id, Long quantity) {
+        Stock stock = stockRepository.findByIdWithPessimisticLock(id)
+            .orElseThrow(IllegalStateException::new);
+
+        stock.decrease(quantity);
+    }
+}
+```
+        
+  </p>
+</details>
+
 ## Optimistic Lock
 ```java
 public interface StockRepository extends JpaRepository<Stock, Long> {
@@ -38,6 +72,48 @@ public interface StockRepository extends JpaRepository<Stock, Long> {
     Optional<Stock> findByIdWithOptimisticLock(@Param("id") Long id);
 }
 ```
+
+<details>
+  <summary>재고 관리시스템 구현 코드 예시</summary>
+  <p>
+
+```java
+@Component
+public class StockOptimisticLockFacade implements StockCommand {
+    private final StockOptimisticLockService stockOptimisticLockService;
+
+    public StockOptimisticLockFacade(StockOptimisticLockService stockOptimisticLockService) {
+        this.stockOptimisticLockService = stockOptimisticLockService;
+    }
+
+    @Override
+    public void decreaseStockQuantity(Long id, Long quantity) {
+        try {
+            // Retry until success
+            retryUntilSuccess(() ->
+                stockOptimisticLockService.decreaseStockQuantity(id, quantity)
+            );
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        }
+    }
+
+    private void retryUntilSuccess(Runnable runnable) throws InterruptedException {
+        while (true) {
+            try {
+                runnable.run();
+                break;
+            } catch (RuntimeException e) {
+                // retry
+                Thread.sleep(500);
+            }
+        }
+    }
+}
+```
+
+  </p>
+</details>
 
 ## Named Lock
 ```sql
@@ -52,6 +128,38 @@ void getLock(@Param("key") String key);
 @Query(value = "SELECT RELEASE_LOCK(:key)", nativeQuery = true)
 void releaseLock(@Param("key") String key);
 ```
+
+<details>
+  <summary>재고 관리시스템 구현 코드 예시</summary>
+  <p>
+
+```java
+@Component
+public class StockNamedLockFacade implements StockCommand {
+
+    private final NamedLockRepository namedLockRepository;
+
+    private final StockService stockService;
+
+    public StockNamedLockFacade(NamedLockRepository namedLockRepository, StockService stockService) {
+        this.namedLockRepository = namedLockRepository;
+        this.stockService = stockService;
+    }
+
+    @Override
+    public void decreaseStockQuantity(Long id, Long quantity) {
+        try {
+            namedLockRepository.lock(id.toString());
+            stockService.decreaseStockQuantity(id, quantity);
+        } finally {
+            namedLockRepository.unlock(id.toString());
+        }
+    }
+}
+```
+
+  </p>
+</details>
 
 # Redis
 
@@ -92,7 +200,10 @@ public class RedisLockRepository {
 }
 ```
 
-### Lettuce를 활용한 재고 관리 서비스
+<details>
+  <summary>재고 관리시스템 구현 코드 예시</summary>
+  <p>
+
 ```java
 @Component
 public class StockLettuceLockFacade implements StockCommand {
@@ -135,13 +246,19 @@ public class StockLettuceLockFacade implements StockCommand {
 }
 ```
 
+  </p>
+</details>
+
 ## Redisson
 - `pub/sub` 방식으로 락을 획득한다.
 - Lettuce에 비해 Redis에 대한 부하가 적다.
 - 별도의 라이브러리를 사용해야한다.
   - `implementation 'org.redisson:redisson-spring-boot-starter:3.24.3'`
 
-### Redisson을 활용한 재고 관리 서비스
+<details>
+  <summary>재고 관리시스템 구현 코드 예시</summary>
+  <p>
+      
 ```java
 @Component
 public class StockRedissonLockFacade implements StockCommand {
@@ -180,3 +297,6 @@ public class StockRedissonLockFacade implements StockCommand {
     }
 }
 ```
+
+  </p>
+</details>
