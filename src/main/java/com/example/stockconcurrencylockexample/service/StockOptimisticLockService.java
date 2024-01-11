@@ -19,7 +19,8 @@ public class StockOptimisticLockService implements StockCommand {
      * Decrease stock quantity.
      * @param id Product ID
      * @param quantity Quantity to decrease
-     * @throws IllegalStateException If the stock quantity is less than the quantity to decrease
+     * @throws IllegalArgumentException If the stock quantity is less than the quantity to decrease
+     * @throws IllegalStateException If the stock is not found
      * @throws ObjectOptimisticLockingFailureException If too much requests come at the same time
      */
     @Transactional
